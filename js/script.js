@@ -1,15 +1,7 @@
 "use strict"
 
-const numberOfFilms = +prompt("Сколько фильмов Вы уже посмотрели?", "");
-if (numberOfFilms < 10) {
-    console.log("Просмотрено мало фильмов")
-} else if (numberOfFilms > 10 && numberOfFilms < 30) {
-    console.log("Вы средний зритель")
-} else if (numberOfFilms > 30) {
-    console.log("Вы киноман")
-} else {
-    console.log("Произошла ошибка")
-}
+const numberOfFilms = prompt("Сколько фильмов Вы уже посмотрели?", "");
+
 const personalMovieDB = {
     count: numberOfFilms,
     movies: {},
