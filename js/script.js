@@ -70,7 +70,7 @@ function writeYourGenres() {
         do {
             genre = prompt(`Ваш любимый жанр под номером ${i}`, "");
         }
-        while(genre.length<1);
+        while(genre.length>0);
         personalMovieDB.genres[i-1] = genre;
     }
 };
