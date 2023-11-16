@@ -33,18 +33,18 @@ const personalMovieDB = {
     privat: false,
 };
 
-function rememberMyFilms () {
+function rememberMyFilms() {
 
     for (let i = 0; i < 2; i++) {
         const movie = prompt("Один из последних просмотренных фильмов?", ""),
             raiting = prompt("Как оцениваете его?", "");
         if (movie.length != "" && raiting != "" && movie.length < 50 && movie != null && raiting != null) {
             personalMovieDB.movies[movie] = raiting;
-        } else{
+        } else {
             i--
         };
-    
-    };    
+
+    };
 };
 
 rememberMyFilms();
@@ -65,19 +65,19 @@ function detectPersonalLevel() {
 detectPersonalLevel();
 
 function writeYourGenres() {
-    for(let i = 1; i<=3; i++) {
+    for (let i = 1; i <= 3; i++) {
         let genre;
         do {
             genre = prompt(`Ваш любимый жанр под номером ${i}`, "");
         }
-        while(genre.length>0);
-        personalMovieDB.genres[i-1] = genre;
+        while (genre.length > 0);
+        personalMovieDB.genres[i - 1] = genre;
     }
 };
 
 writeYourGenres();
 
-function showMyDB(hidden){
+function showMyDB(hidden) {
     if (!hidden) {
         console.log(personalMovieDB);
     }
