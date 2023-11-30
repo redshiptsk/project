@@ -96,37 +96,35 @@ document.addEventListener('DOMContentLoaded', () => {
     // Modal
 
     const modalTrigger = document.querySelectorAll('[data-modal]'),
-        modal = document.querySelector('.modal'),
-        modalCloseBtn = modal.querySelector('[data-close]');
-    // modalTimerId = setTimeout(modalOpen, 3000);
+        modal = document.querySelector('.modal');
+    // modalTimerId = setTimeout(openModal, 3000);
 
-    function modalOpen() {
+    function openModal() {
         modal.classList.add('show');
         modal.classList.remove('hide');
         document.body.style.overflow = 'hidden';
     };
 
-    function modalClose() {
+    function closeModal() {
         modal.classList.add('hide');
         modal.classList.remove('show');
         document.body.style.overflow = '';
     };
 
     modalTrigger.forEach((btn) => {
-        btn.addEventListener('click', modalOpen);
+        btn.addEventListener('click', openModal);
 
     });
 
-    modalCloseBtn.addEventListener('click', modalClose);
     modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
-            modalClose();
+        if (e.target === modal || e.target.getAttribute('data-close') == '') {
+            closeModal();
         }
     });
 
     document.addEventListener('keydown', (e) => {
         if (e.code === 'Escape' && modal.classList.contains('show')) {
-            modalClose();
+            closeModal();
         }
     });
 
@@ -135,7 +133,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function showModalByScroll() {
         if (window.scrollY + document.documentElement.clientHeight >= document.documentElement.scrollHeight) {
-            modalOpen();
+            openModal();
             window.removeEventListener('scroll', showModalByScroll);
         }
     }
@@ -220,7 +218,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const forms = document.querySelectorAll('form');
 
     const message = {
-        loading: "Загрузка",
+        loading: "img/form/spinner.svg",
         succsess: "Успех",
         failure: "Ошибка"
     }
@@ -229,41 +227,70 @@ document.addEventListener('DOMContentLoaded', () => {
         postData(item);
     })
 
-    function postData(form){
+    function postData(form) {
         form.addEventListener('submit', (e) => {
             e.preventDefault();
 
-            const statusMessage = document.createElement('div');
-            statusMessage.classList.add('status');
-            statusMessage.textContent = message.loading;
-            form.append(statusMessage);
+            const statusMessage = document.createElement('img');
+            statusMessage.src = message.loading;
+            statusMessage.style.cssText = `
+            display:block;
+            margin:0 auto;
+            `;
+
+            form.insertAdjacentElement('afterend', statusMessage)
 
             const request = new XMLHttpRequest();
             request.open('POST', 'server.php');
-            
+
             request.setRequestHeader('Content-type', 'application/json');
             const formData = new FormData(form);
 
             const object = {};
-            formData.forEach(function(value, key){
+            formData.forEach(function (value, key) {
                 object[key] = value
             })
 
             const json = JSON.stringify(object)
 
             request.send(json);
-            request.addEventListener('load', () =>{
-                if(request.status === 200) {
+
+            request.addEventListener('load', () => {
+                if (request.status === 200) {
                     console.log(request.response);
-                    statusMessage.textContent = message.succsess;
+                    showThanksModal(message.succsess);
                     form.reset();
-                    setTimeout(() => {
-                        statusMessage.remove();
-                    }, 5000);
+                    statusMessage.remove();
                 } else {
-                    statusMessage.textContent = message.failure;
+                    showThanksModal(message.failure);
                 }
             })
         });
+    };
+
+    function showThanksModal(message) {
+        const prevModalDialog = document.querySelector('.modal__dialog');
+
+        prevModalDialog.classList.add('hide');
+        openModal();
+
+        const thanksModal = document.createElement('div');
+        thanksModal.classList.add('modal__dialog');
+        thanksModal.innerHTML = `
+        <div class="modal__content">
+          <div class="modal__close" data-close>×</div>
+          <div class="modal__title">${message}</div>
+        </div>
+        `;
+
+        document.querySelector('.modal').append(thanksModal);
+        setTimeout(() => {
+            thanksModal.remove();
+            prevModalDialog.classList.add('show');
+            prevModalDialog.classList.remove('hide');
+            closeModal();
+        }, 4000)
+
     }
+
 });
